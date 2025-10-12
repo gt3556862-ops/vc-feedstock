@@ -115,9 +115,9 @@ def subs(line, args):
         "ver_plus_one": str(int(args.activate_major)+1),
         "vcver_nodots": args.activate_vcver.replace(".", ""),
         "host_msbuild_plat": get_msbuild_plat(args.host_platform),
-        "target_msbuild_plat": get_msbuil_plat(args.target_platform),
+        "target_msbuild_plat": get_msbuild_plat(args.target_platform),
         "host_msbuild_plat_lower": get_msbuild_plat(args.host_platform).lower(),
-        "target_msbuild_plat_lower": get_msbuil_plat(args.target_platform).lower(),
+        "target_msbuild_plat_lower": get_msbuild_plat(args.target_platform).lower(),
         "vcvarsbat": get_vcvarsbat(args.target_platform, args.host_platform),
     }
     return t.substitute(d)
