@@ -101,6 +101,9 @@ IF NOT "@{target_platform}" == "@{host_platform}" (
   FOR /F "delims=" %%i IN ('where cl.exe') DO  if not defined CL_EXE set CL_EXE=%%i
   call :GetDirName CL_EXE CL_DIR1
   call :GetDirName CL_DIR1 CL_DIR2
+  :: CL_DIR2 will have spaces in it, but some build tools like don't really like
+  :: CC_FOR_BUILD etc having spaces in it
+  :: Here we map CL_DIR2 to Z:
   subst Z: "$CL_DIR2"
   set CL_DIR1=
   set CL_DIR2=
@@ -201,6 +204,8 @@ exit /B 0
 setlocal enabledelayedexpansion
 set "input_var_name=%~1"
 set "output_var_name=%~4"
+:: We replace paths like C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\@{target_msbuild_plat}
+:: to contain @{host_msbuild_plat} for use in _FOR_BUILD variables
 set "temp_var=!input_var_name:@{target_msbuild_plat}=@{host_msbuild_plat}!"
 set "temp_var2=!temp_var:@{target_msbuild_plat_lower}=@{host_msbuild_plat_lower}!"
 endlocal & set "%output_var_name%=%temp_var2%"
