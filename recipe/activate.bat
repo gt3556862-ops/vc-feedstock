@@ -93,34 +93,6 @@ IF "%CONDA_BUILD%" == "1" (
   set "CMAKE_ARGS=%CMAKE_ARGS% -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% -DPython_FIND_REGISTRY=NEVER -DPython3_FIND_REGISTRY=NEVER -DCMAKE_PROGRAM_PATH=%BUILD_PREFIX%\bin;%BUILD_PREFIX%\Scripts;%BUILD_PREFIX%\Library\bin;%PREFIX%\bin;%PREFIX%\Scripts;%PREFIX%\Library\bin"
 )
 
-IF NOT "@{target_platform}" == "@{host_platform}" (
-  set "CONDA_BUILD_CROSS_COMPILATION=1"
-  set "CMAKE_ARGS=%CMAKE_ARGS% -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_SYSTEM_PROCESSOR=@{target_processor}"
-
-  set CL_EXE=
-  :: Get the first value from where cl.exe
-  FOR /F "delims=" %%i IN ('where cl.exe') DO  if not defined CL_EXE set CL_EXE=%%i
-  call :GetDirName CL_EXE CL_DIR1
-  call :GetDirName CL_DIR1 CL_DIR2
-  :: CL_DIR2 will have spaces in it, but some build tools like don't really like
-  :: CC_FOR_BUILD etc having spaces in it
-  :: Here we map CL_DIR2 to Z:
-  subst Z: "$CL_DIR2"
-  set CL_DIR1=
-  set CL_DIR2=
-  set CL_EXE=
-
-  set "CC_FOR_BUILD=Z:/@{host_msbuild_plat}/cl.exe"
-  set "CXX_FOR_BUILD=Z:/@{host_msbuild_plat}/cl.exe"
-  call :ReplaceInTargetVariable LIB LIB_FOR_BUILD
-  call :ReplaceInTargetVariable INCLUDE INCLUDE_FOR_BUILD
-  set "LIB_FOR_BUILD=%CONDA_PREFIX%/Library/lib;!LIB_FOR_BUILD!"
-  set "INCLUDE_FOR_BUILD=%CONDA_PREFIX%/Library/include;!INCLUDE_FOR_BUILD!"
-  set "LDFLAGS_FOR_BUILD=%LDFLAGS% /MACHINE:@{host_msbuild_plat}"
-) else (
-  set "CONDA_BUILD_CROSS_COMPILATION=0"
-)
-
 :: set CMAKE_* variables
 :: platform selection changed with VS 16 2019, but for compatibility we keep the older way
 IF @{year} GEQ 2019  (
@@ -177,6 +149,34 @@ if %ERRORLEVEL% neq 0 (
   )
 )
 popd
+
+IF NOT "@{target_platform}" == "@{host_platform}" (
+  set "CONDA_BUILD_CROSS_COMPILATION=1"
+  set "CMAKE_ARGS=%CMAKE_ARGS% -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_SYSTEM_PROCESSOR=@{target_processor}"
+
+  set CL_EXE=
+  :: Get the first value from where cl.exe
+  FOR /F "delims=" %%i IN ('where cl.exe') DO  if not defined CL_EXE set CL_EXE=%%i
+  call :GetDirName CL_EXE CL_DIR1
+  call :GetDirName CL_DIR1 CL_DIR2
+  :: CL_DIR2 will have spaces in it, but some build tools like don't really like
+  :: CC_FOR_BUILD etc having spaces in it
+  :: Here we map CL_DIR2 to Z:
+  subst Z: "$CL_DIR2"
+  set CL_DIR1=
+  set CL_DIR2=
+  set CL_EXE=
+
+  set "CC_FOR_BUILD=Z:/@{host_msbuild_plat}/cl.exe"
+  set "CXX_FOR_BUILD=Z:/@{host_msbuild_plat}/cl.exe"
+  call :ReplaceInTargetVariable LIB LIB_FOR_BUILD
+  call :ReplaceInTargetVariable INCLUDE INCLUDE_FOR_BUILD
+  set "LIB_FOR_BUILD=%CONDA_PREFIX%/Library/lib;!LIB_FOR_BUILD!"
+  set "INCLUDE_FOR_BUILD=%CONDA_PREFIX%/Library/include;!INCLUDE_FOR_BUILD!"
+  set "LDFLAGS_FOR_BUILD=%LDFLAGS% /MACHINE:@{host_msbuild_plat}"
+) else (
+  set "CONDA_BUILD_CROSS_COMPILATION=0"
+)
 
 :GetWin10SdkDir
 call :GetWin10SdkDirHelper HKLM\SOFTWARE\Wow6432Node > nul 2>&1
