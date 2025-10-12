@@ -151,10 +151,10 @@ if %ERRORLEVEL% neq 0 (
 popd
 
 IF NOT "@{target_platform}" == "@{host_platform}" (
-  setlocal enabledelayedexpansion
-    set "CONDA_BUILD_CROSS_COMPILATION=1"
-    set "CMAKE_ARGS=%CMAKE_ARGS% -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_SYSTEM_PROCESSOR=@{target_processor}"
+  set "CONDA_BUILD_CROSS_COMPILATION=1"
+  set "CMAKE_ARGS=%CMAKE_ARGS% -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_SYSTEM_PROCESSOR=@{target_processor}"
 
+  setlocal enabledelayedexpansion
     set CL_DIR1=
     set CL_DIR2=
     set CL_EXE=
