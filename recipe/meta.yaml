@@ -298,6 +298,8 @@ outputs:
         - echo "%CMAKE_GENERATOR%"
         - echo "%CMAKE_GENERATOR_PLATFORM%"
         - echo "%CMAKE_GENERATOR_TOOLSET%"
+        - echo "CC=%CC%"
+        - echo "CC_FOR_BUILD=%CC_FOR_BUILD%"
     about:
       summary: >-
         Activation and version verification of MSVC {{ vcver }}
