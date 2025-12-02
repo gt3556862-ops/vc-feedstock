@@ -141,7 +141,7 @@ if "%LATEST_VS:~0,5%" LSS "@{vcvars_ver}" (
 )
 
 :: if this didn't work and CONDA_BUILD is not set, we're outside
-:: conda-forge CI so retry without vcvars_ver, which is going to
+:: conda-forge CI so retry without vcvars_ver, because that would
 :: fail on local installs that don't match our exact versions
 if %ERRORLEVEL% neq 0 (
   if "%CONDA_BUILD%" == "" (
