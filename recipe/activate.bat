@@ -153,8 +153,9 @@ popd
 :: after calling vcvars, %VSINSTALLDIR% is in front of our own compilers on the path,
 :: which is undesirable e.g. when using clang etc.; move our paths in front again
 IF NOT "%CONDA_BUILD%" == "" (
-  set "PATH=%BUILD_PREFIX%;%BUILD_PREFIX%\Library\bin;%BUILD_PREFIX%\Scripts;%BUILD_PREFIX%\bin;%PATH%"
+  :: BUILD_PREFIX comes first in PATH --> needs to be prepended last
   set "PATH=%PREFIX%;%PREFIX%\Library\bin;%PREFIX%\Scripts;%PREFIX%\bin;%PATH%"
+  set "PATH=%BUILD_PREFIX%;%BUILD_PREFIX%\Library\bin;%BUILD_PREFIX%\Scripts;%BUILD_PREFIX%\bin;%PATH%"
 ) else (
   set "PATH=%CONDA_PREFIX%;%CONDA_PREFIX%\Library\bin;%CONDA_PREFIX%\Scripts;%CONDA_PREFIX%\bin;%PATH%"
 )
